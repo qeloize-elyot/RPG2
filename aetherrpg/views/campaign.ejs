@@ -1,0 +1,121 @@
+<%- include('partials/header') %>
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <h1><%= campaign.name %></h1>
+        <p class="text-muted"><%= campaign.system %> · <%= campaign.style %> · Mestre: <%= campaign.owner_name %></p>
+      </div>
+      <% if (member && member.role === 'gm') { %>
+        <span class="badge badge-gm">Código: <%= campaign.invite_code %></span>
+      <% } %>
+    </div>
+
+    <% if (campaign.description) { %>
+      <div class="card mb-2"><%= campaign.description %></div>
+    <% } %>
+
+    <div class="grid-2">
+      <div>
+        <h2>Membros</h2>
+        <ul style="list-style:none">
+          <% members.forEach(function(m) { %>
+            <li class="card" style="margin-bottom:0.5rem;padding:0.75rem 1rem;display:flex;justify-content:space-between;align-items:center">
+              <span><%= m.display_name || m.username %></span>
+              <span class="badge <%= m.role === 'gm' ? 'badge-gm' : 'badge-player' %>"><%= m.role === 'gm' ? 'Mestre' : 'Jogador' %></span>
+            </li>
+          <% }) %>
+        </ul>
+
+        <h2 class="mt-3">Personagens</h2>
+        <% if (characters.length === 0) { %>
+          <p class="text-muted">Nenhum personagem vinculado.</p>
+        <% } else { %>
+          <% characters.forEach(function(ch) { %>
+            <a href="/characters/<%= ch.id %>" class="card" style="display:block;margin-bottom:0.5rem">
+              <strong><%= ch.name %></strong>
+              <span class="text-muted"> · <%= ch.player_name %> · Nv.<%= ch.level %></span>
+            </a>
+          <% }) %>
+        <% } %>
+      </div>
+
+      <div>
+        <h2>Sessões</h2>
+        <% if (member && member.role === 'gm') { %>
+          <form method="POST" action="/campaigns/<%= campaign.id %>/session" class="card mb-2">
+            <div class="form-group">
+              <label>Título</label>
+              <input type="text" name="title" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label>Data/Hora</label>
+              <input type="datetime-local" name="scheduled_at" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>Descrição</label>
+              <textarea name="description" class="form-control" rows="2"></textarea>
+            </div>
+            <button type="submit" class="btn btn-sm btn-primary">Agendar</button>
+          </form>
+        <% } %>
+        <% if (sessions.length === 0) { %>
+          <p class="text-muted">Nenhuma sessão registrada.</p>
+        <% } else { %>
+          <% sessions.forEach(function(s) { %>
+            <div class="card" style="margin-bottom:0.5rem">
+              <strong><%= s.title %></strong>
+              <% if (s.scheduled_at) { %><br><span class="text-muted" style="font-size:0.85rem"><%= s.scheduled_at %></span><% } %>
+              <% if (s.description) { %><p class="text-muted" style="font-size:0.9rem;margin-top:0.3rem"><%= s.description %></p><% } %>
+            </div>
+          <% }) %>
+        <% } %>
+
+        <h2 class="mt-3">Notas e Lore</h2>
+        <% if (member) { %>
+          <form method="POST" action="/campaigns/<%= campaign.id %>/note" class="card mb-2">
+            <div class="form-group">
+              <label>Título</label>
+              <input type="text" name="title" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label>Conteúdo</label>
+              <textarea name="content" class="form-control" rows="3"></textarea>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Visibilidade</label>
+                <select name="visibility" class="form-control">
+                  <option value="party">Partido</option>
+                  <option value="gm">Apenas Mestre</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Categoria</label>
+                <select name="category" class="form-control">
+                  <option value="geral">Geral</option>
+                  <option value="npc">NPC</option>
+                  <option value="local">Local</option>
+                  <option value="plot">Enredo</option>
+                  <option value="item">Item</option>
+                </select>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-sm btn-primary">Salvar nota</button>
+          </form>
+        <% } %>
+        <% notes.forEach(function(n) { %>
+          <div class="card" style="margin-bottom:0.5rem">
+            <div class="flex justify-between items-center">
+              <strong><%= n.title %></strong>
+              <span class="badge"><%= n.visibility === 'gm' ? 'Mestre' : 'Partido' %></span>
+            </div>
+            <p style="margin-top:0.4rem;white-space:pre-wrap"><%= n.content %></p>
+            <span class="text-muted" style="font-size:0.8rem"><%= n.author_name %> · <%= n.category %></span>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+  </div>
+</section>
+<%- include('partials/footer') %>

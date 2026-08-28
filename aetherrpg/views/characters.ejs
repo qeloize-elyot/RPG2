@@ -1,0 +1,27 @@
+<%- include('partials/header') %>
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <h1>Personagens</h1>
+      <a href="/characters/create" class="btn btn-sm btn-primary">Criar</a>
+    </div>
+    <% if (characters.length === 0) { %>
+      <div class="empty-state">
+        <p>Nenhum personagem criado.</p>
+        <a href="/characters/create" class="btn">Criar personagem</a>
+      </div>
+    <% } else { %>
+      <div class="grid-2">
+        <% characters.forEach(function(ch) { %>
+          <a href="/characters/<%= ch.id %>" class="card">
+            <div class="card-title"><%= ch.name %></div>
+            <p class="text-muted"><%= ch.race %> <%= ch.class %> · Nível <%= ch.level %></p>
+            <% if (ch.campaign_name) { %><span class="badge"><%= ch.campaign_name %></span><% } %>
+            <span class="badge"><%= ch.system %></span>
+          </a>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
+</section>
+<%- include('partials/footer') %>

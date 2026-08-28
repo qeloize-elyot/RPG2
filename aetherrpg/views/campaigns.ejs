@@ -1,0 +1,49 @@
+<%- include('partials/header') %>
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <h1>Campanhas</h1>
+      <div class="flex gap-1">
+        <a href="/campaigns/create" class="btn btn-sm btn-primary">Criar</a>
+        <a href="/campaigns/join" class="btn btn-sm">Código</a>
+      </div>
+    </div>
+
+    <h2>Minhas Campanhas</h2>
+    <% if (myCampaigns.length === 0) { %>
+      <div class="empty-state mb-2"><p>Você ainda não participa de nenhuma campanha.</p></div>
+    <% } else { %>
+      <div class="grid-2 mb-2">
+        <% myCampaigns.forEach(function(c) { %>
+          <a href="/campaigns/<%= c.id %>" class="card">
+            <div class="card-title"><%= c.name %></div>
+            <p class="text-muted" style="font-size:0.9rem;margin:0.4rem 0"><%= (c.description || '').substring(0, 100) %></p>
+            <span class="badge <%= c.member_role === 'gm' ? 'badge-gm' : 'badge-player' %>"><%= c.member_role === 'gm' ? 'Mestre' : 'Jogador' %></span>
+            <span class="badge"><%= c.system %></span>
+            <span class="badge"><%= c.member_count %> membros</span>
+          </a>
+        <% }) %>
+      </div>
+    <% } %>
+
+    <h2 class="mt-3">Campanhas Públicas</h2>
+    <% if (publicCampaigns.length === 0) { %>
+      <div class="empty-state"><p>Nenhuma campanha pública disponível no momento.</p></div>
+    <% } else { %>
+      <div class="grid-2">
+        <% publicCampaigns.forEach(function(c) { %>
+          <div class="card">
+            <div class="card-title"><%= c.name %></div>
+            <p class="text-muted" style="font-size:0.9rem"><%= (c.description || '').substring(0, 120) %></p>
+            <p class="text-muted" style="font-size:0.85rem">Mestre: <%= c.owner_name %> · <%= c.system %> · <%= c.member_count %>/<%= c.max_players %></p>
+            <form method="POST" action="/campaigns/join" class="mt-1">
+              <input type="hidden" name="invite_code" value="<%= c.invite_code %>">
+              <button type="submit" class="btn btn-sm">Solicitar entrada</button>
+            </form>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
+</section>
+<%- include('partials/footer') %>

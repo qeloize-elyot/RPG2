@@ -1,0 +1,29 @@
+<%- include('partials/header') %>
+<section class="section">
+  <div class="container" style="max-width:420px">
+    <h1 class="text-center">Registrar</h1>
+    <div class="ornament"><span></span></div>
+    <% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
+    <form method="POST" action="/register" class="card">
+      <div class="form-group">
+        <label for="username">Usuário</label>
+        <input type="text" id="username" name="username" class="form-control" required minlength="3" autocomplete="username">
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" class="form-control" required autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label for="display_name">Nome de exibição</label>
+        <input type="text" id="display_name" name="display_name" class="form-control" autocomplete="nickname">
+      </div>
+      <div class="form-group">
+        <label for="password">Senha (mín. 6)</label>
+        <input type="password" id="password" name="password" class="form-control" required minlength="6" autocomplete="new-password">
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%">Criar conta</button>
+    </form>
+    <p class="text-center mt-2 text-muted">Já tem conta? <a href="/login">Entrar</a></p>
+  </div>
+</section>
+<%- include('partials/footer') %>

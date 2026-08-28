@@ -1,0 +1,79 @@
+<%- include('partials/header') %>
+<section class="section">
+  <div class="container" style="max-width:640px">
+    <h1>Criar Personagem</h1>
+    <div class="ornament"><span></span></div>
+    <% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
+    <form method="POST" action="/characters/create" class="card">
+      <div class="form-group">
+        <label for="name">Nome</label>
+        <input type="text" id="name" name="name" class="form-control" required>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="system">Sistema</label>
+          <select id="system" name="system" class="form-control">
+            <option>D&D 5e</option>
+            <option>Pathfinder 2e</option>
+            <option>Tormenta 20</option>
+            <option>Outro</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="campaign_id">Campanha (opcional)</label>
+          <select id="campaign_id" name="campaign_id" class="form-control">
+            <option value="">— Nenhuma —</option>
+            <% campaigns.forEach(function(c) { %>
+              <option value="<%= c.id %>"><%= c.name %></option>
+            <% }) %>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="race">Raça</label>
+          <input type="text" id="race" name="race" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="class">Classe</label>
+          <input type="text" id="class" name="class" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="level">Nível</label>
+          <input type="number" id="level" name="level" class="form-control" value="1" min="1" max="20">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="background">Antecedente</label>
+          <input type="text" id="background" name="background" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="alignment">Alinhamento</label>
+          <input type="text" id="alignment" name="alignment" class="form-control">
+        </div>
+      </div>
+      <h3 class="mt-2 mb-2">Atributos</h3>
+      <div class="form-row">
+        <% ['str','dex','con','int','wis','cha'].forEach(function(s) { %>
+          <div class="form-group">
+            <label for="<%= s %>"><%= s.toUpperCase() %></label>
+            <input type="number" id="<%= s %>" name="<%= s %>" class="form-control" value="10" min="1" max="30">
+          </div>
+        <% }) %>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="hp_max">PV Máximo</label>
+          <input type="number" id="hp_max" name="hp_max" class="form-control" value="10" min="1">
+        </div>
+        <div class="form-group">
+          <label for="ac">CA</label>
+          <input type="number" id="ac" name="ac" class="form-control" value="10" min="1">
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary mt-1">Criar Personagem</button>
+    </form>
+  </div>
+</section>
+<%- include('partials/footer') %>

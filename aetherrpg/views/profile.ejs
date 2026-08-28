@@ -1,0 +1,27 @@
+<%- include('partials/header') %>
+<section class="section">
+  <div class="container" style="max-width:480px">
+    <h1>Perfil</h1>
+    <div class="ornament"><span></span></div>
+    <form method="POST" action="/profile" class="card">
+      <div class="form-group">
+        <label>Usuário</label>
+        <input type="text" class="form-control" value="<%= user.username %>" disabled>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="text" class="form-control" value="<%= user.email %>" disabled>
+      </div>
+      <div class="form-group">
+        <label for="display_name">Nome de exibição</label>
+        <input type="text" id="display_name" name="display_name" class="form-control" value="<%= user.display_name || '' %>">
+      </div>
+      <div class="form-group">
+        <label for="bio">Bio</label>
+        <textarea id="bio" name="bio" class="form-control" rows="3"><%= user.bio || '' %></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Salvar</button>
+    </form>
+  </div>
+</section>
+<%- include('partials/footer') %>

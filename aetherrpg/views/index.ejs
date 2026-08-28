@@ -1,0 +1,67 @@
+<%- include('partials/header') %>
+
+<section class="hero">
+  <div class="container">
+    <h1>Portal das Sombras</h1>
+    <p class="subtitle">Gerencie campanhas, fichas e combates com a solidez de um grimório antigo. Feito para mesas reais.</p>
+    <div class="hero-actions">
+      <% if (user) { %>
+        <a href="/dashboard" class="btn btn-primary">Entrar no Santuário</a>
+        <a href="/campaigns/create" class="btn">Nova Campanha</a>
+      <% } else { %>
+        <a href="/register" class="btn btn-primary">Criar Conta</a>
+        <a href="/login" class="btn">Entrar</a>
+      <% } %>
+    </div>
+  </div>
+</section>
+
+<div class="ornament"><span>FUNÇÕES</span></div>
+
+<section class="section">
+  <div class="container">
+    <div class="grid-3">
+      <div class="card">
+        <div class="feature-icon">I</div>
+        <h3 class="card-title">Campanhas</h3>
+        <p class="text-muted">Crie mesas, convide jogadores por código, defina sistema e estilo. Controle de vagas e status.</p>
+      </div>
+      <div class="card">
+        <div class="feature-icon">II</div>
+        <h3 class="card-title">Fichas</h3>
+        <p class="text-muted">Personagens com atributos, PV, CA e inventário. Ligados a campanhas ou independentes.</p>
+      </div>
+      <div class="card">
+        <div class="feature-icon">III</div>
+        <h3 class="card-title">Ferramentas</h3>
+        <p class="text-muted">Rolador de dados com fórmulas (2d6+3) e rastreador de iniciativa com PV em tempo real.</p>
+      </div>
+      <div class="card">
+        <div class="feature-icon">IV</div>
+        <h3 class="card-title">Sessões e Notas</h3>
+        <p class="text-muted">Agende sessões, registre recaps e mantenha lore com visibilidade controlada (partido / mestre).</p>
+      </div>
+      <div class="card">
+        <div class="feature-icon">V</div>
+        <h3 class="card-title">Busca de Mesas</h3>
+        <p class="text-muted">Campanhas públicas listadas para quem procura uma mesa. Filtros por sistema e estilo.</p>
+      </div>
+      <div class="card">
+        <div class="feature-icon">VI</div>
+        <h3 class="card-title">Mobile e Desktop</h3>
+        <p class="text-muted">Interface otimizada para celular e notebook. Dados persistidos em banco SQLite.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="ornament"><span>ACESSO</span></div>
+
+<section class="section">
+  <div class="container text-center">
+    <p class="text-muted mb-2">Conta de demonstração: <strong>admin</strong> / <strong>admin123</strong></p>
+    <a href="/register" class="btn btn-primary">Começar agora</a>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,21 @@
+<%- include('partials/header') %>
+<section class="section">
+  <div class="container" style="max-width:420px">
+    <h1 class="text-center">Entrar</h1>
+    <div class="ornament"><span></span></div>
+    <% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
+    <form method="POST" action="/login" class="card">
+      <div class="form-group">
+        <label for="username">Usuário ou Email</label>
+        <input type="text" id="username" name="username" class="form-control" required autocomplete="username">
+      </div>
+      <div class="form-group">
+        <label for="password">Senha</label>
+        <input type="password" id="password" name="password" class="form-control" required autocomplete="current-password">
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%">Entrar</button>
+    </form>
+    <p class="text-center mt-2 text-muted">Não tem conta? <a href="/register">Registrar</a></p>
+  </div>
+</section>
+<%- include('partials/footer') %>

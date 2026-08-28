@@ -1,0 +1,64 @@
+<%- include('partials/header') %>
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <h1>Santuário</h1>
+      <span class="text-muted">Bem-vindo, <%= user.display_name || user.username %></span>
+    </div>
+
+    <div class="grid-2">
+      <div>
+        <div class="section-header">
+          <h2>Suas Campanhas</h2>
+          <a href="/campaigns/create" class="btn btn-sm">Nova</a>
+        </div>
+        <% if (myCampaigns.length === 0) { %>
+          <div class="empty-state">
+            <p>Nenhuma campanha ainda.</p>
+            <a href="/campaigns/create" class="btn btn-sm">Criar primeira campanha</a>
+          </div>
+        <% } else { %>
+          <% myCampaigns.forEach(function(c) { %>
+            <a href="/campaigns/<%= c.id %>" class="card" style="display:block;margin-bottom:0.75rem">
+              <div class="card-title"><%= c.name %></div>
+              <span class="badge <%= c.member_role === 'gm' ? 'badge-gm' : 'badge-player' %>"><%= c.member_role === 'gm' ? 'Mestre' : 'Jogador' %></span>
+              <span class="badge"><%= c.system %></span>
+            </a>
+          <% }) %>
+          <a href="/campaigns" class="btn btn-ghost btn-sm mt-1">Ver todas</a>
+        <% } %>
+      </div>
+
+      <div>
+        <div class="section-header">
+          <h2>Seus Personagens</h2>
+          <a href="/characters/create" class="btn btn-sm">Novo</a>
+        </div>
+        <% if (myCharacters.length === 0) { %>
+          <div class="empty-state">
+            <p>Nenhum personagem.</p>
+            <a href="/characters/create" class="btn btn-sm">Criar personagem</a>
+          </div>
+        <% } else { %>
+          <% myCharacters.forEach(function(ch) { %>
+            <a href="/characters/<%= ch.id %>" class="card" style="display:block;margin-bottom:0.75rem">
+              <div class="card-title"><%= ch.name %></div>
+              <span class="text-muted"><%= ch.race %> <%= ch.class %> · Nível <%= ch.level %></span>
+            </a>
+          <% }) %>
+          <a href="/characters" class="btn btn-ghost btn-sm mt-1">Ver todos</a>
+        <% } %>
+      </div>
+    </div>
+
+    <div class="mt-3">
+      <h2>Ferramentas Rápidas</h2>
+      <div class="flex gap-2 flex-wrap mt-1">
+        <a href="/tools/dice" class="btn">Rolador de Dados</a>
+        <a href="/tools/combat" class="btn">Rastreador de Combate</a>
+        <a href="/campaigns/join" class="btn btn-ghost">Entrar com Código</a>
+      </div>
+    </div>
+  </div>
+</section>
+<%- include('partials/footer') %>

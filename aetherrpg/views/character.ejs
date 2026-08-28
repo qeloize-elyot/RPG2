@@ -1,0 +1,68 @@
+<%- include('partials/header') %>
+<section class="section">
+  <div class="container">
+    <div class="sheet">
+      <div class="sheet-header">
+        <h1><%= character.name %></h1>
+        <p class="text-muted">
+          <%= character.race %> <%= character.class %> · Nível <%= character.level %>
+          <% if (character.campaign_name) { %> · <%= character.campaign_name %><% } %>
+        </p>
+        <p class="text-muted" style="font-size:0.9rem">
+          Jogador: <%= character.player_name %>
+          <% if (character.background) { %> · <%= character.background %><% } %>
+          <% if (character.alignment) { %> · <%= character.alignment %><% } %>
+        </p>
+      </div>
+
+      <div class="stats-grid">
+        <% const labels = {str:'FOR',dex:'DES',con:'CON',int:'INT',wis:'SAB',cha:'CAR'}; %>
+        <% Object.keys(labels).forEach(function(k) { %>
+          <% const v = stats[k] || 10; const mod = Math.floor((v - 10) / 2); %>
+          <div class="stat-box">
+            <div class="label"><%= labels[k] %></div>
+            <div class="value"><%= v %></div>
+            <div class="mod"><%= mod >= 0 ? '+' + mod : mod %></div>
+          </div>
+        <% }) %>
+      </div>
+
+      <div class="flex gap-2 flex-wrap mb-2">
+        <div class="card" style="padding:0.75rem 1.25rem">
+          <span class="text-muted" style="font-size:0.75rem;text-transform:uppercase">PV</span>
+          <div style="font-family:var(--font-display);font-size:1.4rem;color:var(--crimson-bright)"><%= character.hp_current %> / <%= character.hp_max %></div>
+        </div>
+        <div class="card" style="padding:0.75rem 1.25rem">
+          <span class="text-muted" style="font-size:0.75rem;text-transform:uppercase">CA</span>
+          <div style="font-family:var(--font-display);font-size:1.4rem;color:var(--gold)"><%= character.ac %></div>
+        </div>
+        <div class="card" style="padding:0.75rem 1.25rem">
+          <span class="text-muted" style="font-size:0.75rem;text-transform:uppercase">Iniciativa</span>
+          <div style="font-family:var(--font-display);font-size:1.4rem;color:var(--gold)"><%= character.initiative_mod >= 0 ? '+' : '' %><%= character.initiative_mod %></div>
+        </div>
+      </div>
+
+      <% if (isOwner) { %>
+        <form method="POST" action="/characters/<%= character.id %>/update" class="mt-2">
+          <div class="form-row">
+            <div class="form-group">
+              <label>PV Atual</label>
+              <input type="number" name="hp_current" class="form-control" value="<%= character.hp_current %>">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Anotações</label>
+            <textarea name="notes" class="form-control" rows="4"><%= character.notes || '' %></textarea>
+          </div>
+          <button type="submit" class="btn btn-sm btn-primary">Atualizar</button>
+        </form>
+      <% } else if (character.notes) { %>
+        <div class="card mt-2">
+          <h3>Anotações</h3>
+          <p style="white-space:pre-wrap"><%= character.notes %></p>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</section>
+<%- include('partials/footer') %>

@@ -1,0 +1,16 @@
+<%- include('partials/header') %>
+<section class="section">
+  <div class="container" style="max-width:400px">
+    <h1>Entrar com Código</h1>
+    <div class="ornament"><span></span></div>
+    <% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
+    <form method="POST" action="/campaigns/join" class="card">
+      <div class="form-group">
+        <label for="invite_code">Código de convite</label>
+        <input type="text" id="invite_code" name="invite_code" class="form-control" required style="text-transform:uppercase;letter-spacing:0.15em;font-family:var(--font-display)" placeholder="ABC123">
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%">Entrar</button>
+    </form>
+  </div>
+</section>
+<%- include('partials/footer') %>

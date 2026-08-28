@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AetherRPG — Plataforma profissional de RPG de mesa dark fantasy gótica.">
+  <title><%= typeof title !== 'undefined' ? title + ' · AetherRPG' : 'AetherRPG' %></title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container navbar-inner">
+      <a href="/" class="logo">Aether<span>RPG</span></a>
+      <button class="nav-toggle" type="button" aria-label="Menu">Menu</button>
+      <ul class="nav-links">
+        <% if (typeof user !== 'undefined' && user) { %>
+          <li><a href="/dashboard">Santuário</a></li>
+          <li><a href="/campaigns">Campanhas</a></li>
+          <li><a href="/characters">Personagens</a></li>
+          <li><a href="/tools">Ferramentas</a></li>
+          <li><a href="/profile"><%= user.display_name || user.username %></a></li>
+          <li><a href="/logout">Sair</a></li>
+        <% } else { %>
+          <li><a href="/login">Entrar</a></li>
+          <li><a href="/register" class="btn btn-sm">Registrar</a></li>
+        <% } %>
+      </ul>
+    </div>
+  </nav>
+  <main>
