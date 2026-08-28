@@ -3,7 +3,7 @@ const path = require('path');
 const bcrypt = require('bcryptjs');
 const { v4: uuidv4 } = require('uuid');
 
-const dbPath = path.join(__dirname, 'aetherrpg.db');
+const dbPath = process.env.DATABASE_PATH || path.join(__dirname, 'aetherrpg.db');
 const db = new Database(dbPath);
 
 db.pragma('journal_mode = WAL');
