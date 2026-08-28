@@ -116,7 +116,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`\n  ╔══════════════════════════════════════╗`);
   console.log(`  ║   AetherRPG — Portal das Sombras    ║`);
   console.log(`  ║   http://localhost:${PORT}              ║`);
