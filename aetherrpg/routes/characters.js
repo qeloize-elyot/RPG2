@@ -22,13 +22,14 @@ router.get('/create', authRequired, (req, res) => {
     JOIN campaign_members cm ON cm.campaign_id = c.id
     WHERE cm.user_id = ?
   `).all(req.user.id);
-  res.render('character-create', { title: 'Criar Personagem', user: req.user, campaigns, error: null });
+  res.render('character-create', { title: 'Criar Agente', user: req.user, campaigns, error: null });
 });
 
 router.post('/create', authRequired, (req, res) => {
   const {
-    name, system, race, class: charClass, level, background, alignment,
-    str, dex, con, int, wis, cha, campaign_id, hp_max, ac
+    name, system, concept, origin, class: charClass, nex,
+    campaign_id, agi, for: forca, int: intelecto, pre, vig,
+    appearance, appearance_notes, notes, point_pool, attr_max
   } = req.body;
 
   if (!name) {
@@ -36,31 +37,70 @@ router.post('/create', authRequired, (req, res) => {
       SELECT c.id, c.name FROM campaigns c
       JOIN campaign_members cm ON cm.campaign_id = c.id WHERE cm.user_id = ?
     `).all(req.user.id);
-    return res.render('character-create', { title: 'Criar Personagem', user: req.user, campaigns, error: 'Nome é obrigatório.' });
+    return res.render('character-create', {
+      title: 'Criar Agente', user: req.user, campaigns, error: 'Nome é obrigatório.'
+    });
   }
 
+  // Ordem Paranormal attributes
   const stats = JSON.stringify({
-    str: parseInt(str) || 10,
-    dex: parseInt(dex) || 10,
-    con: parseInt(con) || 10,
-    int: parseInt(int) || 10,
-    wis: parseInt(wis) || 10,
-    cha: parseInt(cha) || 10
+    agi: parseInt(agi) || 1,
+    for: parseInt(forca) || 1,
+    int: parseInt(intelecto) || 1,
+    pre: parseInt(pre) || 1,
+    vig: parseInt(vig) || 1,
+    point_pool: parseInt(point_pool) || 4,
+    attr_max: parseInt(attr_max) || 3
   });
 
+  // HP simple formula based on Vigor (can refine later)
+  const vigVal = parseInt(vig) || 1;
+  const nexVal = parseInt(nex) || 5;
+  const hp = 8 + vigVal + Math.floor(nexVal / 5);
+
+  const appearanceData = appearance || '{}';
+  const fullNotes = [
+    concept ? `Conceito: ${concept}` : '',
+    appearance_notes ? `Aparência: ${appearance_notes}` : '',
+    notes || ''
+  ].filter(Boolean).join('\n');
+
   const id = uuidv4();
-  const hp = parseInt(hp_max) || 10;
-  db.prepare(`
-    INSERT INTO characters (
-      id, user_id, campaign_id, name, system, race, class, level,
-      background, alignment, stats, hp_current, hp_max, ac, initiative_mod
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `).run(
-    id, req.user.id, campaign_id || null, name, system || 'D&D 5e',
-    race || '', charClass || '', parseInt(level) || 1,
-    background || '', alignment || '', stats, hp, hp,
-    parseInt(ac) || 10, Math.floor(((parseInt(dex) || 10) - 10) / 2)
-  );
+  try {
+    db.prepare(`
+      INSERT INTO characters (
+        id, user_id, campaign_id, name, system, race, class, level,
+        background, alignment, stats, hp_current, hp_max, ac, initiative_mod, notes, inventory
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(
+      id,
+      req.user.id,
+      campaign_id || null,
+      name,
+      system || 'Ordem Paranormal',
+      origin || '',
+      charClass || '',
+      nexVal,
+      concept || '',
+      '',
+      stats,
+      hp,
+      hp,
+      10 + (parseInt(agi) || 1),
+      parseInt(agi) || 1,
+      fullNotes,
+      appearanceData
+    );
+  } catch (e) {
+    console.error(e);
+    const campaigns = db.prepare(`
+      SELECT c.id, c.name FROM campaigns c
+      JOIN campaign_members cm ON cm.campaign_id = c.id WHERE cm.user_id = ?
+    `).all(req.user.id);
+    return res.render('character-create', {
+      title: 'Criar Agente', user: req.user, campaigns, error: 'Erro ao salvar. Tente de novo.'
+    });
+  }
 
   res.redirect('/characters/' + id);
 });
@@ -79,7 +119,6 @@ router.get('/:id', authRequired, (req, res) => {
   }
 
   if (character.user_id !== req.user.id && !character.is_public) {
-    // allow if same campaign member
     if (character.campaign_id) {
       const member = db.prepare('SELECT id FROM campaign_members WHERE campaign_id = ? AND user_id = ?')
         .get(character.campaign_id, req.user.id);
@@ -91,8 +130,13 @@ router.get('/:id', authRequired, (req, res) => {
     }
   }
 
-  const stats = JSON.parse(character.stats || '{}');
-  const inventory = JSON.parse(character.inventory || '[]');
+  let stats = {};
+  try { stats = JSON.parse(character.stats || '{}'); } catch (e) { stats = {}; }
+  let inventory = [];
+  try { inventory = JSON.parse(character.inventory || '[]'); } catch (e) {
+    // inventory may store appearance JSON string
+    inventory = character.inventory || '{}';
+  }
 
   res.render('character', {
     title: character.name,
