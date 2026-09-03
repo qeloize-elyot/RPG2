@@ -1,79 +1,248 @@
 <%- include('partials/header') %>
 <section class="section">
-  <div class="container" style="max-width:640px">
-    <h1>Criar Personagem</h1>
-    <div class="ornament"><span></span></div>
+  <div class="container" style="max-width:920px">
+    <h1>Criar Agente</h1>
+    <div class="ornament"><span>ESTILO C.R.I.S.</span></div>
     <% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
-    <form method="POST" action="/characters/create" class="card">
-      <div class="form-group">
-        <label for="name">Nome</label>
-        <input type="text" id="name" name="name" class="form-control" required>
-      </div>
-      <div class="form-row">
+
+    <div class="create-steps">
+      <button type="button" class="step-btn active" data-step="1">1. Conceito</button>
+      <button type="button" class="step-btn" data-step="2">2. Atributos</button>
+      <button type="button" class="step-btn" data-step="3">3. Aparência</button>
+      <button type="button" class="step-btn" data-step="4">4. Resumo</button>
+    </div>
+
+    <form method="POST" action="/characters/create" id="create-form" class="card">
+      <!-- STEP 1 -->
+      <div class="step-panel active" data-step="1">
+        <h2>Conceito</h2>
+        <p class="text-muted mb-2">Quem é esse agente? Uma frase curta ajuda nas próximas escolhas.</p>
         <div class="form-group">
-          <label for="system">Sistema</label>
-          <select id="system" name="system" class="form-control">
-            <option>D&D 5e</option>
-            <option>Pathfinder 2e</option>
-            <option>Tormenta 20</option>
-            <option>Outro</option>
-          </select>
+          <label for="name">Nome do Agente *</label>
+          <input type="text" id="name" name="name" class="form-control" required placeholder="Ex: Bianca Oliveira">
         </div>
         <div class="form-group">
-          <label for="campaign_id">Campanha (opcional)</label>
-          <select id="campaign_id" name="campaign_id" class="form-control">
-            <option value="">— Nenhuma —</option>
-            <% campaigns.forEach(function(c) { %>
-              <option value="<%= c.id %>"><%= c.name %></option>
-            <% }) %>
-          </select>
+          <label for="concept">Conceito</label>
+          <input type="text" id="concept" name="concept" class="form-control" placeholder="Ex: Estudante de medicina que viu demais">
         </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label for="race">Raça</label>
-          <input type="text" id="race" name="race" class="form-control">
-        </div>
-        <div class="form-group">
-          <label for="class">Classe</label>
-          <input type="text" id="class" name="class" class="form-control">
-        </div>
-        <div class="form-group">
-          <label for="level">Nível</label>
-          <input type="number" id="level" name="level" class="form-control" value="1" min="1" max="20">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label for="background">Antecedente</label>
-          <input type="text" id="background" name="background" class="form-control">
-        </div>
-        <div class="form-group">
-          <label for="alignment">Alinhamento</label>
-          <input type="text" id="alignment" name="alignment" class="form-control">
-        </div>
-      </div>
-      <h3 class="mt-2 mb-2">Atributos</h3>
-      <div class="form-row">
-        <% ['str','dex','con','int','wis','cha'].forEach(function(s) { %>
+        <div class="form-row">
           <div class="form-group">
-            <label for="<%= s %>"><%= s.toUpperCase() %></label>
-            <input type="number" id="<%= s %>" name="<%= s %>" class="form-control" value="10" min="1" max="30">
+            <label for="origin">Origem</label>
+            <input type="text" id="origin" name="origin" class="form-control" placeholder="Ex: Agente de Saúde, Acadêmico...">
           </div>
-        <% }) %>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label for="hp_max">PV Máximo</label>
-          <input type="number" id="hp_max" name="hp_max" class="form-control" value="10" min="1">
+          <div class="form-group">
+            <label for="class">Classe</label>
+            <select id="class" name="class" class="form-control">
+              <option value="">— Escolher —</option>
+              <option>Combatente</option>
+              <option>Especialista</option>
+              <option>Ocultista</option>
+              <option>Outro</option>
+            </select>
+          </div>
         </div>
-        <div class="form-group">
-          <label for="ac">CA</label>
-          <input type="number" id="ac" name="ac" class="form-control" value="10" min="1">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="nex">NEX inicial (%)</label>
+            <input type="number" id="nex" name="nex" class="form-control" value="5" min="0" max="99">
+          </div>
+          <div class="form-group">
+            <label for="campaign_id">Campanha (opcional)</label>
+            <select id="campaign_id" name="campaign_id" class="form-control">
+              <option value="">— Nenhuma —</option>
+              <% campaigns.forEach(function(c) { %>
+                <option value="<%= c.id %>"><%= c.name %></option>
+              <% }) %>
+            </select>
+          </div>
+        </div>
+        <input type="hidden" name="system" value="Ordem Paranormal">
+        <div class="step-nav">
+          <span></span>
+          <button type="button" class="btn btn-primary next-step" data-next="2">Próximo →</button>
         </div>
       </div>
-      <button type="submit" class="btn btn-primary mt-1">Criar Personagem</button>
+
+      <!-- STEP 2 -->
+      <div class="step-panel" data-step="2">
+        <h2>Atributos</h2>
+        <p class="text-muted mb-2">
+          Padrão Ordem Paranormal: cada atributo começa em <strong>1</strong>.
+          Você distribui pontos. Máximo inicial recomendado: <strong>3</strong>.
+          Pode reduzir um atributo para <strong>0</strong> para ganhar +1 ponto.
+        </p>
+        <div class="points-config card" style="background:var(--bg-elevated);margin-bottom:1.25rem;padding:1rem">
+          <div class="form-row" style="align-items:end">
+            <div class="form-group" style="margin-bottom:0">
+              <label for="point-pool">Pontos para distribuir</label>
+              <input type="number" id="point-pool" name="point_pool" class="form-control" value="4" min="0" max="20">
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label for="attr-max">Máximo por atributo</label>
+              <input type="number" id="attr-max" name="attr_max" class="form-control" value="3" min="1" max="5">
+            </div>
+            <div class="points-remaining">
+              Restantes: <strong id="points-left">4</strong>
+            </div>
+          </div>
+        </div>
+        <div class="attr-grid" id="attr-grid">
+          <div class="attr-card" data-attr="agi">
+            <div class="attr-header"><span class="attr-name">Agilidade</span><span class="attr-abbr">AGI</span></div>
+            <p class="attr-desc">Rapidez, reflexos, mira e esquiva.</p>
+            <div class="attr-controls">
+              <button type="button" class="attr-btn minus">−</button>
+              <input type="number" name="agi" id="agi" class="attr-value" value="1" min="0" max="5" readonly>
+              <button type="button" class="attr-btn plus">+</button>
+            </div>
+          </div>
+          <div class="attr-card" data-attr="for">
+            <div class="attr-header"><span class="attr-name">Força</span><span class="attr-abbr">FOR</span></div>
+            <p class="attr-desc">Potência física, dano corpo a corpo, carregar peso.</p>
+            <div class="attr-controls">
+              <button type="button" class="attr-btn minus">−</button>
+              <input type="number" name="for" id="for" class="attr-value" value="1" min="0" max="5" readonly>
+              <button type="button" class="attr-btn plus">+</button>
+            </div>
+          </div>
+          <div class="attr-card" data-attr="int">
+            <div class="attr-header"><span class="attr-name">Intelecto</span><span class="attr-abbr">INT</span></div>
+            <p class="attr-desc">Raciocínio, conhecimento, perícias e rituais.</p>
+            <div class="attr-controls">
+              <button type="button" class="attr-btn minus">−</button>
+              <input type="number" name="int" id="int" class="attr-value" value="1" min="0" max="5" readonly>
+              <button type="button" class="attr-btn plus">+</button>
+            </div>
+          </div>
+          <div class="attr-card" data-attr="pre">
+            <div class="attr-header"><span class="attr-name">Presença</span><span class="attr-abbr">PRE</span></div>
+            <p class="attr-desc">Carisma, força de vontade, percepção social.</p>
+            <div class="attr-controls">
+              <button type="button" class="attr-btn minus">−</button>
+              <input type="number" name="pre" id="pre" class="attr-value" value="1" min="0" max="5" readonly>
+              <button type="button" class="attr-btn plus">+</button>
+            </div>
+          </div>
+          <div class="attr-card" data-attr="vig">
+            <div class="attr-header"><span class="attr-name">Vigor</span><span class="attr-abbr">VIG</span></div>
+            <p class="attr-desc">Resistência, saúde, fôlego e pontos de vida.</p>
+            <div class="attr-controls">
+              <button type="button" class="attr-btn minus">−</button>
+              <input type="number" name="vig" id="vig" class="attr-value" value="1" min="0" max="5" readonly>
+              <button type="button" class="attr-btn plus">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="step-nav">
+          <button type="button" class="btn btn-ghost prev-step" data-prev="1">← Voltar</button>
+          <button type="button" class="btn btn-primary next-step" data-next="3">Próximo →</button>
+        </div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="step-panel" data-step="3">
+        <h2>Aparência 2D</h2>
+        <p class="text-muted mb-2">Monte o visual por camadas (estilo gacha / Roblox 2D). Sem emojis. Estrutura pronta para centenas de peças.</p>
+        <div class="avatar-builder">
+          <div class="avatar-preview-wrap">
+            <div class="avatar-stage" id="avatar-stage">
+              <div class="av-layer" id="layer-skin" data-layer="skin"></div>
+              <div class="av-layer" id="layer-body" data-layer="body"></div>
+              <div class="av-layer" id="layer-bottom" data-layer="bottom"></div>
+              <div class="av-layer" id="layer-top" data-layer="top"></div>
+              <div class="av-layer" id="layer-face" data-layer="face"></div>
+              <div class="av-layer" id="layer-eyes" data-layer="eyes"></div>
+              <div class="av-layer" id="layer-hair" data-layer="hair"></div>
+              <div class="av-layer" id="layer-shoes" data-layer="shoes"></div>
+              <div class="av-layer" id="layer-accessory" data-layer="accessory"></div>
+            </div>
+            <p class="text-muted text-center mt-1" style="font-size:0.8rem">Prévia ao vivo</p>
+          </div>
+          <div class="avatar-controls">
+            <div class="av-tabs">
+              <button type="button" class="av-tab active" data-cat="skin">Pele</button>
+              <button type="button" class="av-tab" data-cat="hair">Cabelo</button>
+              <button type="button" class="av-tab" data-cat="eyes">Olhos</button>
+              <button type="button" class="av-tab" data-cat="top">Roupa sup.</button>
+              <button type="button" class="av-tab" data-cat="bottom">Roupa inf.</button>
+              <button type="button" class="av-tab" data-cat="shoes">Calçados</button>
+              <button type="button" class="av-tab" data-cat="accessory">Acessórios</button>
+            </div>
+            <div class="av-options" id="av-options"></div>
+            <div class="form-group mt-2">
+              <label for="skin-color">Cor de pele</label>
+              <input type="color" id="skin-color" value="#c4a484" class="form-control" style="height:42px;padding:4px">
+            </div>
+            <div class="form-group">
+              <label for="hair-color">Cor do cabelo</label>
+              <input type="color" id="hair-color" value="#2b1d14" class="form-control" style="height:42px;padding:4px">
+            </div>
+            <div class="form-group">
+              <label for="eye-color">Cor dos olhos</label>
+              <input type="color" id="eye-color" value="#3a5a7a" class="form-control" style="height:42px;padding:4px">
+            </div>
+          </div>
+        </div>
+        <input type="hidden" name="appearance" id="appearance-json" value="{}">
+        <div class="form-group mt-2">
+          <label for="appearance_notes">Descrição física (texto)</label>
+          <textarea id="appearance_notes" name="appearance_notes" class="form-control" rows="2" placeholder="Altura, cicatrizes, estilo..."></textarea>
+        </div>
+        <div class="step-nav">
+          <button type="button" class="btn btn-ghost prev-step" data-prev="2">← Voltar</button>
+          <button type="button" class="btn btn-primary next-step" data-next="4">Próximo →</button>
+        </div>
+      </div>
+
+      <!-- STEP 4 -->
+      <div class="step-panel" data-step="4">
+        <h2>Resumo</h2>
+        <div id="summary-box" class="card" style="background:var(--bg-elevated)">
+          <p class="text-muted">Preencha as etapas anteriores para ver o resumo.</p>
+        </div>
+        <div class="form-group mt-2">
+          <label for="notes">Notas adicionais</label>
+          <textarea id="notes" name="notes" class="form-control" rows="3"></textarea>
+        </div>
+        <div class="step-nav">
+          <button type="button" class="btn btn-ghost prev-step" data-prev="3">← Voltar</button>
+          <button type="submit" class="btn btn-primary">Criar Agente</button>
+        </div>
+      </div>
     </form>
   </div>
 </section>
+
+<style>
+.create-steps{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.25rem}
+.step-btn{font-family:var(--font-display);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;padding:.5rem .9rem;background:var(--bg-card);border:1px solid var(--border);color:var(--text-muted);cursor:pointer;border-radius:var(--radius)}
+.step-btn.active{border-color:var(--gold);color:var(--gold);background:var(--bg-elevated)}
+.step-panel{display:none}
+.step-panel.active{display:block}
+.step-nav{display:flex;justify-content:space-between;margin-top:1.5rem;gap:1rem}
+.attr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.85rem}
+.attr-card{background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--radius);padding:1rem}
+.attr-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.35rem}
+.attr-name{font-family:var(--font-display);color:var(--gold);font-size:1rem}
+.attr-abbr{font-size:.7rem;color:var(--text-dim);letter-spacing:.08em}
+.attr-desc{font-size:.82rem;color:var(--text-muted);margin-bottom:.75rem;min-height:2.4em}
+.attr-controls{display:flex;align-items:center;gap:.5rem;justify-content:center}
+.attr-btn{width:36px;height:36px;border:1px solid var(--border-gold);background:transparent;color:var(--gold);font-size:1.2rem;cursor:pointer;border-radius:var(--radius);line-height:1}
+.attr-btn:hover{background:var(--gold);color:var(--bg-deep)}
+.attr-value{width:48px;text-align:center;font-size:1.25rem;font-family:var(--font-display);background:var(--bg-deep);border:1px solid var(--border);color:var(--text);border-radius:var(--radius);padding:.3rem}
+.points-remaining{font-family:var(--font-display);color:var(--gold);font-size:1.1rem;padding-bottom:.4rem}
+.avatar-builder{display:grid;grid-template-columns:220px 1fr;gap:1.25rem;margin-bottom:1rem}
+@media(max-width:700px){.avatar-builder{grid-template-columns:1fr}}
+.avatar-preview-wrap{text-align:center}
+.avatar-stage{width:200px;height:280px;margin:0 auto;background:linear-gradient(180deg,#1a1520 0%,#0e0c12 100%);border:1px solid var(--border-gold);border-radius:8px;position:relative;overflow:hidden}
+.av-layer{position:absolute;inset:0;background-size:contain;background-repeat:no-repeat;background-position:center bottom;pointer-events:none}
+.av-tabs{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.75rem}
+.av-tab{font-family:var(--font-display);font-size:.68rem;letter-spacing:.04em;text-transform:uppercase;padding:.4rem .65rem;background:var(--bg-deep);border:1px solid var(--border);color:var(--text-muted);cursor:pointer;border-radius:var(--radius)}
+.av-tab.active{border-color:var(--crimson);color:var(--text);background:var(--purple-dim)}
+.av-options{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:.5rem;max-height:200px;overflow-y:auto;padding:.25rem}
+.av-option{aspect-ratio:1;border:2px solid var(--border);border-radius:var(--radius);background:var(--bg-deep);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.65rem;color:var(--text-muted);text-align:center;padding:4px;transition:border-color .2s}
+.av-option:hover,.av-option.selected{border-color:var(--gold);color:var(--gold)}
+.av-option.none{opacity:.6}
+</style>
+<script src="/js/character-create.js"></script>
 <%- include('partials/footer') %>
